@@ -19,16 +19,30 @@ that runs in B with B's own sandbox, instead of being given full access.
 ## Rules (in code, no configuration)
 
 - Only workspaces registered in DSH are reachable; arbitrary paths are refused.
-- Subagent child sessions and the caller itself cannot be targeted.
+- Callers: only ordinary sessions (no subagents or teammates). `mesh_open`,
+  `mesh_send` and `mesh_cancel` also require the caller to run `workspace-write`;
+  `mesh_workspaces`, `mesh_read` and `mesh_wait` are observation-only.
+- Targets: ordinary, non-archived sessions of registered workspaces, never the
+  caller itself, and only while their sandbox is exactly `workspace-write`.
+  A pre-step guard re-checks that when a mesh message is about to run, so a
+  session switched to full access after the message was queued does not run it.
 - The agent chooses the agent preset, never the permission preset. New sessions
-  get the profile default; sessions running with `danger-full-access` are refused.
+  get the profile default; if that is not `workspace-write` the blank session
+  is archived and the call fails.
+- `steer`, `mesh_cancel`, tool arguments and user-typed messages in `mesh_read`
+  are available only for sessions the caller opened or exchanged messages with.
+  All returned text is marked as untrusted data.
 - Approvals and questions stay in the target session; `mesh_read`/`mesh_wait`
   report `waiting_for_user`.
-- Every delivered message starts with an `[agent-mesh] from session …` header so
-  the receiving agent knows who wrote and how to answer.
-- Chain depth is at most 2 (A → B → C); replies to a peer add no depth.
-- At most 10 `mesh_open` per session per hour and 20 `mesh_send` per target per hour.
-- No plugin state: depth and rate limits are derived from session logs.
+- Every delivered message starts with an `[agent-mesh] from session …` header and
+  carries an `agent-message` relay source. Only headers whose source matches are
+  trusted, so a user-typed copy cannot fake depth or a reply.
+- Chain depth is at most 2 (A → B → C). Replies to a peer add no depth; at most
+  8 replies in a row per pair. A message the user types resets the depth.
+- `mesh_wait` refuses when the target is itself waiting on the caller.
+- Per caller per hour: 10 `mesh_open`, 20 `mesh_send` per target, 60 in total,
+  10 `mesh_cancel`.
+- No plugin state: everything is derived from session logs.
 
 ## Install
 

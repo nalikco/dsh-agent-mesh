@@ -1,5 +1,5 @@
 export const name = 'dsh-agent-mesh';
-export const inject = ['tools', 'agents', 'sessionController', 'workspaceRegistry', 'sessionQuery'];
+export const inject = ['tools', 'agents', 'sessionController', 'workspaceRegistry', 'sessionQuery', 'sandboxPolicy'];
 
 // The packaged Loader caches ESM modules by URL for the process lifetime; keep
 // this entry stable and re-import the implementation per activation.

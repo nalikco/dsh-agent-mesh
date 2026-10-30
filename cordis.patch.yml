@@ -1,0 +1,5 @@
+# Agent Mesh: one Host row. Global tools, no configuration.
+- insert:
+    - id: agent-mesh
+      name: dsh-agent-mesh
+      config: {}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Agent Mesh",
+    "description": "Lets agents open sessions in other registered workspaces, send them messages, watch their progress and wait for answers. Target sessions keep the default permission preset; the agent may choose the agent preset."
+  }
+}

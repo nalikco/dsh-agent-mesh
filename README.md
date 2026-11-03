@@ -48,6 +48,13 @@ that runs in B with B's own sandbox, instead of being given full access.
 
 `plugin_manager install_bundle` with this directory as the target.
 
+## Localization
+
+Plugin Manager metadata is available in English and Russian through the exported
+`locale/*.json` resources. DSH 0.2.2 includes Russian (`ru`) in Settings → General;
+this Host-only plugin does not register a language or Client UI dictionary.
+Model-facing tool descriptions and mesh protocol messages remain in English.
+
 ## Test
 
 ```

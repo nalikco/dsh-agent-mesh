@@ -48,6 +48,8 @@ that runs in B with B's own sandbox, instead of being given full access.
 
 `plugin_manager install_bundle` with this directory as the target.
 
+Installing from git (`git+ssh://git@github.com/nalikco/dsh-agent-mesh.git#v0.2.0`) needs no committed build: the package compiles itself (`prepack` runs `tsc`). The package manager refuses to run that script until you approve it (`approvedBuilds` in `install_bundle`, or `allowBuilds` in pnpm). For a local `link:` install run `npm install` once (or `npm run build`) so `lib/` exists.
+
 ## Localization
 
 Plugin Manager metadata is available in English and Russian through the exported

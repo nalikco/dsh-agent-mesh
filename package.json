@@ -1,6 +1,6 @@
 {
   "name": "dsh-agent-mesh",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Agent Mesh for DeepSeek Harness: agents open, message and watch sessions in other registered workspaces.",
   "license": "MIT",
@@ -34,11 +34,9 @@
     "dsh": "^0.2.1-rc.5"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc"
     "typecheck": "tsc --noEmit",
     "test": "tsc && node --test test/*.test.mjs",
-    "prepare": "tsc",
-    "prepack": "tsc"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

@@ -1,15 +1,15 @@
 {
   "name": "dsh-agent-mesh",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Agent Mesh for DeepSeek Harness: agents open, message and watch sessions in other registered workspaces.",
   "license": "MIT",
   "author": "Igor Karpliuk",
   "type": "module",
-  "main": "./index.mjs",
+  "main": "./lib/index.js",
   "icon": "./icon.svg",
   "exports": {
-    ".": "./index.mjs",
+    ".": "./lib/index.js",
     "./cordis.patch.yml": "./cordis.patch.yml",
     "./package.json": "./package.json",
     "./icon": "./icon.svg",
@@ -17,8 +17,8 @@
     "./locale/*.json": "./locale/*.json"
   },
   "files": [
-    "index.mjs",
-    "host.mjs",
+    "lib/*.js",
+    "lib/*.d.ts",
     "cordis.patch.yml",
     "icon.svg",
     "locale/*.json",
@@ -34,6 +34,14 @@
     "dsh": "^0.2.1-rc.5"
   },
   "scripts": {
-    "test": "node --test test/*.test.mjs"
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "tsc && node --test test/*.test.mjs",
+    "prepare": "tsc",
+    "prepack": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0"
   }
 }

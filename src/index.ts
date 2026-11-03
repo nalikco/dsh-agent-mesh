@@ -3,8 +3,8 @@ export const inject = ['tools', 'agents', 'sessionController', 'workspaceRegistr
 
 // The packaged Loader caches ESM modules by URL for the process lifetime; keep
 // this entry stable and re-import the implementation per activation.
-export async function apply(ctx, config) {
+export async function apply(ctx: any, config: unknown) {
   const rev = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
-  const host = await import(`./host.mjs?rev=${rev}`);
+  const host = await import(`./host.js?rev=${rev}`);
   return host.apply(ctx, config);
 }

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { meshHeader, parseMeshHeader, incomingMesh, recentCalls, sessionState, lastAnswer, feedItem, meshOf, openedSessions, messagedSessions, waitingOn } from '../host.mjs';
+import { meshHeader, parseMeshHeader, incomingMesh, recentCalls, sessionState, lastAnswer, feedItem, meshOf, openedSessions, messagedSessions, waitingOn } from '../lib/host.js';
 
 const user = (seq, text, kind = 'user', sender) => ({ type: 'user/message', seq, time: 0, surfaceOp: 'append', data: { role: 'user', source: kind === 'agent-message' ? { kind, form: 'relay', senderSessionId: sender } : { kind }, content: [{ type: 'text', text }] } });
 const relay = (seq, from, depth, reply = false, body = 'x') => user(seq, `${meshHeader(from, '/r', depth, reply)}\n\n${body}`, 'agent-message', from);

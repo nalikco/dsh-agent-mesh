@@ -390,7 +390,7 @@ export function apply(ctx: any) {
 
   ctx.effect(() => tools.register({
     name: 'mesh_workspaces',
-    description: 'List the workspaces registered in DSH that Agent Mesh can reach (one per repository), their most recent sessions, and the agent presets available for mesh_open. Call this first to find the workspace of another repository and to reuse an existing session instead of opening a new one.',
+    description: 'Only needed when the task requires work in another workspace; for your own workspace use subagents. List the workspaces registered in DSH that Agent Mesh can reach (one per repository), their most recent sessions, and the agent presets available for mesh_open. Call this first to find the workspace of another repository and to reuse an existing session instead of opening a new one.',
     parameters: object({}),
     output,
     isConcurrencySafe: () => true,
@@ -431,7 +431,7 @@ export function apply(ctx: any) {
 
   ctx.effect(() => tools.register({
     name: 'mesh_open',
-    description: 'Open a new ordinary session in another DSH workspace and send it the first message. The new agent works in that repository with the default permission preset (sandboxed to its own workspace, approvals shown to the user there); it sees your session id and can answer with mesh_send. Use mesh_wait to block until it finishes, mesh_read to watch progress. Write the prompt as a complete, self-contained task: the other agent does not see this conversation.',
+    description: 'Open a new ordinary session in ANOTHER registered DSH workspace and send it the first message. Use Agent Mesh only when the task requires work in a different workspace (another repository with its own sandbox). Never use it for work in your own workspace or for delegation - use subagent/subagent_fork for that. Reuse an existing session of the target workspace via mesh_send when one fits (see mesh_workspaces). The new agent works with the default permission preset, sees your session id and can answer with mesh_send. Use mesh_wait to block until it finishes, mesh_read to watch progress. Write the prompt as a complete, self-contained task: the other agent does not see this conversation.',
     parameters: object({
       workspace: { type: 'string', description: 'Workspace id, exact title, or absolute path from mesh_workspaces. Must be registered in DSH.' },
       prompt: { type: 'string', description: 'Complete, self-contained first message for the new agent.' },
@@ -447,6 +447,8 @@ export function apply(ctx: any) {
       if (recentCalls(ownEvents, 'mesh_open', Date.now()) > MAX_OPENS_PER_HOUR) throw new MeshError(`more than ${MAX_OPENS_PER_HOUR} mesh_open calls in the last hour; reuse existing sessions with mesh_send`, 'RATE_LIMIT');
       validateBody(args.prompt);
       const workspace = await resolveWorkspace(args.workspace);
+      const own = await workspaceOf(self.session.header.cwd);
+      if (own && own.id === workspace.id) throw new MeshError('this is your own workspace; do not open a new session here. Use subagent or subagent_fork for delegated work, or mesh_send to an existing session', 'OWN_WORKSPACE');
       if ((await workspace.status()) !== 'ok') throw new MeshError(`workspace directory ${workspace.path} is missing`, 'WORKSPACE_MISSING');
       const created = await agents.withoutInitiator(() => controller.create({
         workspaceId: workspace.id,
